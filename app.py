@@ -109,7 +109,7 @@ if st.button('Generate Recipes'):
     st.header("\nTop Recommended Recipes:")
     for idx in top_indices:
         st.subheader("Recipe")
-        st.write(df.loc[idx, 'TranslatedRecipeName'].split('-')[0])
+        st.write(df.loc[idx, 'TranslatedRecipeName'].split(' - ')[0])
         with st.expander("Learn More"):
             cuisine_str = "Cuisine:" + str(df.loc[idx, 'Cuisine'])
             st.subheader("Cuisine:")
