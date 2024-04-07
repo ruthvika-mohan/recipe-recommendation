@@ -120,6 +120,8 @@ if st.button('Generate Recipes'):
             st.write(str(round(similarity_scores[0][idx]*100))+"%")
             st.subheader("Diet Type")
             st.write(df.loc[idx, 'Diet'])
+            st.subheader("Ingredients")
+            st.write(str(df.loc[idx,'FinalIngredientList']))
             st.subheader("How to prepare")
             input_string =df.loc[idx, 'TranslatedInstructions']
             # Split the input string into sentences using regex
