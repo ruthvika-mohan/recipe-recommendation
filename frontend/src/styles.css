@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background: #faf9f7;
+  color: #1a1c1b;
+  -webkit-font-smoothing: antialiased;
+}
+
+.material-symbols-outlined {
+  display: inline-block;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+  line-height: 1;
+}
+
+.label {
+  display: block;
+  padding-inline: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1rem;
+  text-transform: uppercase;
+  color: #424843;
+}
+
+.chip {
+  border-radius: 9999px;
+  background: #eeeeeb;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #424843;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.chip:hover,
+.chip-selected {
+  background: #d8e6d9;
+  color: #173422;
+}
+
+.chip:active,
+.small-button:active,
+.icon-button:active {
+  transform: scale(0.96);
+}
+
+.suggestion-chip {
+  border-radius: 0.5rem;
+  border: 1px solid #c2c8c0;
+  background: #ffffff;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8rem;
+  color: #424843;
+}
+
+.icon-button {
+  border-radius: 9999px;
+  padding: 0.5rem;
+  color: #173422;
+  transition: background-color 160ms ease;
+}
+
+.icon-button:hover {
+  background: #f4f4f1;
+}
+
+.small-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background: #eeeeeb;
+  padding: 0.5rem;
+  color: #173422;
+}
+
+.meta-pill,
+.meta-pill-alt {
+  border-radius: 9999px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #5b685d;
+  background: #d8e6d9;
+}
+
+.meta-pill-alt {
+  color: #183145;
+  background: #cde5ff;
+}
