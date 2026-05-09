@@ -12,7 +12,7 @@ const DEFAULT_FORM = {
   cuisine: "",
   course: "",
   maxTimeMins: "",
-  fridgeIngredients: ["tomato", "spinach"],
+  fridgeIngredients: [],
 };
 
 const DEFAULT_PROFILE = {
@@ -723,7 +723,7 @@ function Select({ label, value, options, onChange }) {
 
 function ResultsGrid({ results, loading, onOpen, onFeedback }) {
   if (loading) {
-    return <section className="rounded-xl bg-surface-container-low p-8 text-on-surface-variant">Scoring diet, pantry, cuisine, and feedback...</section>;
+    return <section className="rounded-xl bg-surface-container-low p-8 text-on-surface-variant">Checking what recipe ingredients you already have...</section>;
   }
   if (!results.length) {
     return (
@@ -737,7 +737,7 @@ function ResultsGrid({ results, loading, onOpen, onFeedback }) {
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h2 className="font-display text-2xl font-semibold text-primary">Top Recommended Recipes</h2>
-          <p className="text-sm text-on-surface-variant">Ranked by pantry coverage first, then cuisine and learning signals.</p>
+          <p className="text-sm text-on-surface-variant">Ranked by how much of each recipe you can already make, then cuisine and learning signals.</p>
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -796,10 +796,13 @@ function RecipeCard({ recipe, onOpen, onFeedback }) {
         </div>
         <h3 className="min-h-16 font-display text-lg font-semibold text-primary">{recipe.name}</h3>
         <p className="mt-2 text-sm text-on-surface-variant">{recipe.score.match_reason}</p>
-        <FitLine label="Pantry fit" value={recipe.score.ingredient_coverage} />
-        <FitLine label="Recipe fit" value={recipe.score.recipe_coverage} />
+        <FitLine label="Already have" value={recipe.score.recipe_coverage} />
         <div className="mt-3 text-xs text-on-surface-variant">
-          Uses: {recipe.score.matched_ingredients.length ? recipe.score.matched_ingredients.join(", ") : "No selected ingredients"}
+          Have: {recipe.score.matched_ingredients.length ? recipe.score.matched_ingredients.join(", ") : "No recipe ingredients yet"}
+        </div>
+        <div className="mt-1 text-xs text-on-surface-variant">
+          Need: {recipe.score.missing_ingredients.length ? recipe.score.missing_ingredients.slice(0, 8).join(", ") : "Nothing else"}
+          {recipe.score.missing_ingredients.length > 8 ? ` +${recipe.score.missing_ingredients.length - 8} more` : ""}
         </div>
         <div className="mt-2 text-xs font-semibold text-primary">{formatRecipeTime(recipe)}</div>
         <div className="mt-4 grid grid-cols-[1fr_auto_auto_auto] gap-2">
