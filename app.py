@@ -1,21 +1,44 @@
 import pickle
+from pathlib import Path
+
 import streamlit as st
-import pandas as pd 
-import numpy as np
+import pandas as pd
 import re
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-import nltk
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-import string
 from sklearn.metrics.pairwise import cosine_similarity
+
+BASE_DIR = Path(__file__).resolve().parent
+INGREDIENTS_PATH = BASE_DIR / "list_ingredients_for_app.csv"
+FEATURES_PATH = BASE_DIR / "concatenated_features.pkl"
+VECTORIZER_PATH = BASE_DIR / "vectorizer.pkl"
+RECIPES_PATH = BASE_DIR / "data" / "final_ingredient_list_created.csv"
 
 st.title("Let us help you get ideas for your next meal")
 
+
+@st.cache_data
+def load_ingredients():
+    return pd.read_csv(INGREDIENTS_PATH)["0"].dropna().unique()
+
+
+@st.cache_data
+def load_recipes():
+    return pd.read_csv(RECIPES_PATH)
+
+
+@st.cache_resource
+def load_model_artifacts():
+    with open(FEATURES_PATH, "rb") as file:
+        features = pickle.load(file)
+
+    with open(VECTORIZER_PATH, "rb") as file:
+        vectorizer = pickle.load(file)
+
+    return features, vectorizer
+
+
 def user_input_transformer(input_string):
-    clean_output = ('').join(input_string.lower().split('  '))
-    return clean_output
+    return " ".join(input_string.lower().split())
 
 #user_input_transformer(user_input)
 
@@ -69,7 +92,7 @@ user_course = st.selectbox(
     tuple(course_list))
 
 ### Get user ingredients 
-ingredient_list = pd.read_csv('list_ingredients_for_app.csv')['0'].unique()
+ingredient_list = load_ingredients()
 
 user_ingredients = st.multiselect(
     'What is in your fridge',
@@ -83,16 +106,7 @@ preprocessed_input = user_input_transformer(user_input)
 #st.button("Reset", type="primary")
 if st.button('Generate Recipes'):
 
-    x_file_path = "concatenated_features.pkl"
-    # To load X from the pickle file
-    with open(x_file_path, 'rb') as file:
-        X_loaded = pickle.load(file)
-
-    # TF-IDF Vectorization
-    vector_file_path = "vectorizer.pkl"
-    # To load Vectorizer from the pickle file
-    with open(vector_file_path, 'rb') as file:
-        vectorizer = pickle.load(file)
+    X_loaded, vectorizer = load_model_artifacts()
 
     # TF-IDF Vectorization of user input
     user_input_vector = vectorizer.transform([preprocessed_input])
@@ -103,7 +117,7 @@ if st.button('Generate Recipes'):
     # Get indices of top recommended recipes (top 3 in this example)
     top_indices = similarity_scores.argsort()[0][-3:][::-1]
 
-    df = pd.read_csv("data/final_ingredient_list_created.csv")
+    df = load_recipes()
 
     # Display top recommended recipes
     st.header("\nTop Recommended Recipes:")
@@ -128,10 +142,9 @@ if st.button('Generate Recipes'):
             sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)(\s+|\s*$)', input_string)
             #st.write(('\n').join(df.loc[idx, 'TranslatedInstructions'].split('.'))
             sentences = [sentence for sentence in sentences if sentence not in [' ','']]
-            print(sentences)
             # Convert sentences to Markdown format
             markdown_output = '\n'.join(f"- {sentence}" for sentence in sentences)
 
             # Print the Markdown output
-            st.write(markdown_output)
+            st.markdown(markdown_output)
         
