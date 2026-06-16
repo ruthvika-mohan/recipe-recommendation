@@ -34,6 +34,15 @@ def create_app() -> FastAPI:
     app.state.recommender = RecipeRecommender(settings.project_dir)
     app.state.feedback_store = build_feedback_store(settings)
 
+    @app.get("/")
+    async def root() -> dict[str, str]:
+        return {
+            "name": settings.app_name,
+            "status": "ok",
+            "docs": "/docs",
+            "health": "/health",
+        }
+
     @app.get("/health")
     async def health() -> dict[str, str]:
         return {"status": "ok"}

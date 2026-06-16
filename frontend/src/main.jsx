@@ -141,6 +141,7 @@ function App() {
       }
       const data = await response.json();
       setMetadata(data);
+      setError("");
     } catch (nextError) {
       setError(`Load failed: ${nextError.message}`);
     }
