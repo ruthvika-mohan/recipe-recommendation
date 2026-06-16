@@ -1,0 +1,14 @@
+.DS_Store
+.venv/
+venv/
+env/
+foodenv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.streamlit/secrets.toml
+.env
+backend/.env
+frontend/.env
+frontend/node_modules/
+frontend/dist/
